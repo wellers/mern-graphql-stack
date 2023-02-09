@@ -1,7 +1,7 @@
 import { postRequest } from "./requests";
 import { ContactSearch } from "./types";
 
-const url = "http://192.168.50.101:4000/"
+const { GRAPHQL_URL } = process.env;
 
 export const ContactsFind = async (filter: ContactSearch) => {
 	const payload = {
@@ -26,5 +26,5 @@ export const ContactsFind = async (filter: ContactSearch) => {
 		}
 	};
 	
-	return await postRequest(url, payload);
+	return await postRequest(GRAPHQL_URL as string, payload);
 }

@@ -1,6 +1,10 @@
+require('dotenv').config();
 const path = require('path');
+const webpack = require("webpack");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+const { GRAPHQL_URL } = process.env;
 
 module.exports = {
 	target: 'web',
@@ -27,6 +31,11 @@ module.exports = {
 	},
 	plugins: [
 		new CleanWebpackPlugin(),
+		new webpack.DefinePlugin({
+			"process.env": {
+				GRAPHQL_URL: `"${GRAPHQL_URL}"`
+			}
+		}),
 		new HtmlWebpackPlugin({
 			inject: true,
 			template: path.resolve(__dirname, "public/index.html")
@@ -34,8 +43,8 @@ module.exports = {
 	],
 	devtool: 'inline-source-map',
 	resolve: {
-		extensions: ['.tsx', '.ts', '.js']		
-	},	
+		extensions: ['.tsx', '.ts', '.js']
+	},
 	output: {
 		filename: '[name].[contenthash].js',
 		chunkFilename: '[name].[contenthash].js',

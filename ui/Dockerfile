@@ -16,5 +16,6 @@ RUN cd /app && npm install
 EXPOSE 80
 COPY server /app/server
 COPY src /app/src
+COPY .env /app/.env
 RUN npm run build
 CMD ["npm", "start"]

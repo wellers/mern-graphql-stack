@@ -11,7 +11,9 @@ services:
     container_name: graphql
     build: ./graphql/
     ports:
-      - 4000:80    
+      - 4000:80
+    environment:
+      - MONGO_URL=mongodb://192.168.50.101:27017/
     restart: on-failure
     depends_on:
       - mongo
@@ -21,5 +23,5 @@ services:
     container_name: ui
     build: ./ui/
     ports:
-      - 80:80    
+      - 80:80
     restart: on-failure
