@@ -1,0 +1,25 @@
+services:
+  mongo:
+    container_name: mongo
+    build: ./mongo/
+    ports:
+      - 27017:27017
+    restart: on-failure
+    volumes:
+      - ~/temp:/data/db
+  graphql:
+    container_name: graphql
+    build: ./graphql/
+    ports:
+      - 4000:80    
+    restart: on-failure
+    depends_on:
+      - mongo
+    links:
+      - mongo
+  ui:
+    container_name: ui
+    build: ./ui/
+    ports:
+      - 80:80    
+    restart: on-failure

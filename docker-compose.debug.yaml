@@ -1,0 +1,7 @@
+services:
+  graphql:
+    ports:      
+      - 9229:9229
+    volumes:
+      - ./graphql/lib:/app/lib
+    command: [ "yarn", "start:dev" ]
