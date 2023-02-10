@@ -21,7 +21,10 @@ services:
       - mongo
   ui:
     container_name: ui
-    build: ./ui/
+    build:
+      context: ./ui/
+      args:
+        - GRAPHQL_URL=http://192.168.50.101:4000/
     ports:
       - 80:80
     restart: on-failure

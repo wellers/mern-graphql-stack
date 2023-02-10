@@ -16,6 +16,11 @@ RUN cd /app && npm install
 EXPOSE 80
 COPY server /app/server
 COPY src /app/src
-COPY .env /app/.env
+
+ARG GRAPHQL_URL
+RUN ["sh", "-c", "touch /app/.env"]
+
+RUN echo "GRAPHQL_URL=$GRAPHQL_URL" >> /app/.env
+
 RUN npm run build
 CMD ["npm", "start"]
