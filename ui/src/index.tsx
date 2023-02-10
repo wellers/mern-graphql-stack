@@ -10,12 +10,20 @@ import 'ts-polyfill/lib/es2018-promise';
 import * as ReactDOM from "react-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
-import configureStore from "./configureStore";
 import { Provider } from "react-redux";
 import AppRouter from "./AppRouter";
 import "./index.less";
+import { configureStore } from '@reduxjs/toolkit';
+import { createLogger } from "redux-logger";
+import thunkMiddleware from "redux-thunk";
+import { rootReducer } from "./stores";
 
-const store = configureStore();
+const loggerMiddleware = createLogger();
+
+const store = configureStore({
+	reducer: rootReducer,
+	middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunkMiddleware).concat(loggerMiddleware)
+});
 
 ReactDOM.render(
 	<Provider store={store}>

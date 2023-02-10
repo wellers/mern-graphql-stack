@@ -2,7 +2,7 @@
 import { connect } from "react-redux";
 import PageContentBox from "../components/PageContentBox";
 
-interface Props { }
+interface Props {}
 
 class HomeContainer extends React.PureComponent<Props> {
 	constructor(props: Props) {

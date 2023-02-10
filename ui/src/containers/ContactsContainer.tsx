@@ -1,5 +1,5 @@
-﻿import * as React from "react";
-import { Button, Col, Form, FormControlProps, Row, Table } from "react-bootstrap";
+﻿import React, { ChangeEventHandler } from "react";
+import { Button, Col, Form, Row, Table } from "react-bootstrap";
 import { connect } from "react-redux";
 import { ThunkDispatch } from "redux-thunk";
 import * as API from "../api/contacts";
@@ -24,11 +24,10 @@ interface State {
 }
 
 type EventHandler<T> = (ev: T) => void;
-type TextChangedEvent = React.FormEvent<FormControlProps>;
 type KeyDownEvent = React.KeyboardEvent<HTMLElement>;
 
 class ContactsContainer extends React.Component<Props, State> {
-	readonly _searchTermChange: EventHandler<TextChangedEvent>;
+	readonly _searchTermChange: ChangeEventHandler<HTMLInputElement>;
 	readonly _searchKeyDown: EventHandler<KeyDownEvent>;
 	readonly _onSearch: () => void;
 
