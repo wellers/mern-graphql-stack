@@ -50,7 +50,7 @@ export const resolvers = {
 			const total_results_count = await db.contacts.count();
 
 			const query = search_term.length > 0
-				? { "surname": search_term }
+				? { $or: [{ "forename": { $regex: search_term, $options: "i" } }, { "surname": { $regex: search_term, $options: "i" } }] }
 				: {}
 
 			const docs = await db.contacts.find(query).toArray();
