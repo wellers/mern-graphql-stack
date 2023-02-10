@@ -148,13 +148,20 @@ class ContactsContainer extends React.Component<Props, State> {
 }
 
 const mapStateToProps = (state: AppState) => {
-	const { contacts } = state;
+	const { 
+		contacts, 
+		pageNumber, 
+		totalResultCount, 
+		resultsPerPage, 
+		serverError
+	} = state.contacts;
+
 	return {
-		contacts: contacts.contacts,
-		pageNumber: contacts.pageNumber,
-		totalResultCount: contacts.totalResultCount,
-		resultsPerPage: contacts.resultsPerPage,
-		serverError: contacts.serverError
+		contacts,
+		pageNumber,
+		totalResultCount,
+		resultsPerPage,
+		serverError
 	};
 };
 

@@ -1,19 +1,24 @@
 FROM node:18.14.0
-
 WORKDIR /app
+EXPOSE 80
 
-RUN npm install -g ts-node
+COPY .eslintrc.json /app/.eslintrc.json
+
+COPY .yarn /app/.yarn
+
+RUN corepack enable && yarn set version 3.1.1
 
 # npm install in a way that allows caching
 COPY package.json /app/package.json
+COPY package-lock.json /app/package-lock.json
+COPY yarn.lock /app/yarn.lock
+COPY .yarnrc.yml /app/.yarnrc.yml
+RUN yarn install
 COPY tsconfig.json /app/tsconfig.json
 COPY webpack.config.js /app/webpack.config.js
 COPY public /app/public
 
-RUN cd /app && npm install
-
 # copy the rest of the content
-EXPOSE 80
 COPY server /app/server
 COPY src /app/src
 
