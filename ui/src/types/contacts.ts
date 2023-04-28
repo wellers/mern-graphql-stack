@@ -1,4 +1,4 @@
-﻿import { Contact } from "../api/graphql-client/types";
+﻿import { Contact } from "@wellers/graphql-client";
 import LoadObject from "../loadObject";
 
 export const REQUEST_CONTACTS = 'REQUEST_CONTACTS';

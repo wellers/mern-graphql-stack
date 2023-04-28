@@ -11,6 +11,10 @@ RUN corepack enable && yarn set version 3.1.1
 # npm install in a way that allows caching
 COPY package.json /app/package.json
 COPY package-lock.json /app/package-lock.json
+
+COPY --from=sv-graphql-client:latest /app/ /app/client
+RUN cd /app/client && npm link
+
 COPY yarn.lock /app/yarn.lock
 COPY .yarnrc.yml /app/.yarnrc.yml
 RUN yarn install

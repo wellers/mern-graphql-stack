@@ -1,5 +1,5 @@
 ﻿import { ThunkAction } from "redux-thunk";
-import { ContactsFindResponse } from "../api/graphql-client/types";
+import { ContactsFindResponse } from "@wellers/graphql-client";
 import { AppState } from "../stores";
 import * as Types from "../types/contacts";
 

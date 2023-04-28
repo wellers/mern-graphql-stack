@@ -3,7 +3,7 @@ import { Button, Col, Form, Row, Table } from "react-bootstrap";
 import { connect } from "react-redux";
 import { ThunkDispatch } from "redux-thunk";
 import * as API from "../api/contacts";
-import { ContactSearch } from "../api/graphql-client/types";
+import { ContactSearch } from "@wellers/graphql-client";
 import PageContentBox from "../components/PageContentBox";
 import LoadObject from "../loadObject";
 import { AppState } from "../stores";

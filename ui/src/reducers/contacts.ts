@@ -1,4 +1,4 @@
-﻿import { Contact } from "../api/graphql-client/types";
+﻿import { Contact } from "@wellers/graphql-client";
 import LoadObject from "../loadObject";
 import { ContactActions, ContactRecord, ContactsState, RECEIVE_CONTACTS, RECEIVE_SERVER_ERROR, REQUEST_CONTACTS } from "../types/contacts";
 
