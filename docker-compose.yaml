@@ -1,3 +1,4 @@
+name: mern
 services:
   mongo:
     container_name: mongo
