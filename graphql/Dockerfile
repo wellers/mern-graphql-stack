@@ -10,7 +10,7 @@ RUN corepack enable && yarn set version 3.1.1
 
 # yarn install in a way that allows caching
 COPY package.json /app/package.json
-COPY package-lock.json /app/package-lock.json
+
 COPY yarn.lock /app/yarn.lock
 COPY .yarnrc.yml /app/.yarnrc.yml
 RUN yarn install

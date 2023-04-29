@@ -10,7 +10,6 @@ RUN corepack enable && yarn set version 3.1.1
 
 # npm install in a way that allows caching
 COPY package.json /app/package.json
-COPY package-lock.json /app/package-lock.json
 
 COPY --from=mern-graphql-client:latest /app/ /app/client
 RUN cd /app/client && npm link
