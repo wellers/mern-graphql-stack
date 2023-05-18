@@ -1,9 +1,10 @@
-﻿import { Col, Row } from "react-bootstrap";
+﻿import React from "react";
+import { Col, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { RouterUrls } from "../AppRouter";
 import "./Menu.less";
 
-export const Menu = () => (
+const Menu = () => (
 	<Row className={"menu"}>
 		<Col sm>
 			<Link to={RouterUrls.HomeUrl}>Home</Link>
@@ -11,4 +12,7 @@ export const Menu = () => (
 		<Col sm>
 			<Link to={RouterUrls.ContactsUrl}>Contacts</Link>
 		</Col>
-	</Row>)
+	</Row>
+);
+
+export default Menu;

@@ -7,16 +7,15 @@ import 'ts-polyfill/lib/es2017-string';
 import 'ts-polyfill/lib/es2017-object';
 import 'ts-polyfill/lib/es2018-promise';
 
-import * as ReactDOM from "react-dom";
-
+import ReactDOM from "react-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Provider } from "react-redux";
-import AppRouter from "./AppRouter";
-import "./index.less";
 import { configureStore } from '@reduxjs/toolkit';
 import { createLogger } from "redux-logger";
 import thunkMiddleware from "redux-thunk";
 import { rootReducer } from "./stores";
+import AppRouter from "./AppRouter";
+import "./index.less";
 
 const loggerMiddleware = createLogger();
 
@@ -27,7 +26,7 @@ const store = configureStore({
 
 ReactDOM.render(
 	<Provider store={store}>
-		<AppRouter></AppRouter>
+		<AppRouter />
 	</Provider>,
 	document.getElementById("root")
 );

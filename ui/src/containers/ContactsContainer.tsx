@@ -1,6 +1,6 @@
-﻿import React, { ChangeEventHandler } from "react";
+﻿import React, { useCallback, useEffect, useState, ChangeEvent } from "react";
 import { Button, Col, Form, Row, Table } from "react-bootstrap";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "redux-thunk";
 import * as API from "../api/contacts";
 import { ContactSearch } from "@wellers/graphql-client";
@@ -10,118 +10,40 @@ import { AppState } from "../stores";
 import { ContactActions, ContactRecord } from "../types/contacts";
 import "./ContactsContainer.less";
 
-interface Props {
-	readonly contacts: LoadObject<ReadonlyArray<ContactRecord>>;
-	readonly dispatch: ThunkDispatch<AppState, undefined, ContactActions>;
-	readonly pageNumber: number;
-	readonly totalResultCount: number;
-	readonly resultsPerPage: number;
-	readonly serverError: string;
-}
+interface Props { }
 
-interface State {
-	readonly searchTerm: string;
-}
+const ContactsContainer: React.FC<Props> = () => {
+	const dispatch: ThunkDispatch<AppState, undefined, ContactActions> = useDispatch();
+	const state = useSelector((state: AppState) => state.contacts);
 
-type EventHandler<T> = (ev: T) => void;
-type KeyDownEvent = React.KeyboardEvent<HTMLElement>;
+	const [searchTerm, setSearchTerm] = useState("");
 
-class ContactsContainer extends React.Component<Props, State> {
-	readonly _searchTermChange: ChangeEventHandler<HTMLInputElement>;
-	readonly _searchKeyDown: EventHandler<KeyDownEvent>;
-	readonly _onSearch: () => void;
+	useEffect(() => {
+		fetchForCurrentCriteria();
+	}, []);
 
-	constructor(props: Props) {
-		super(props);
-		this.state = {
-			searchTerm: ''
-		};
-		this._searchTermChange = this.handleFieldChange('searchTerm', ev => (ev.currentTarget.value as string || ''));
-		this._searchKeyDown = ({ key }) => this.handleKeyDown(key);
-		this._onSearch = () => this.fetchForCurrentCriteria();
-	}
-
-	componentDidMount() {
-		this.fetchForCurrentCriteria();
-	}
-
-	fetchForCurrentCriteria(pageNumber?: number) {
+	const fetchForCurrentCriteria = useCallback((pageNumber?: number) => {
 		const search: ContactSearch = {
-			search_term: (this.state.searchTerm || ''),
+			search_term: (searchTerm || ''),
 			page_number: (pageNumber || 1),
 			results_per_page: 25
 		};
-		this.props.dispatch(API.fetchContacts(search));
-	}
+		dispatch(API.fetchContacts(search));
+	},
+		[searchTerm, dispatch]
+	);
 
-	handleKeyDown(key: string) {
-		if (key === 'Enter') {
-			this.fetchForCurrentCriteria();
+	const handleKeyDown = (key: string) => {
+		if (key === "Enter") {
+			fetchForCurrentCriteria();
 		}
-	}
+	};
 
-	handleFieldChange<T, FieldKey extends keyof State>(fieldName: FieldKey, valuePreparer: (e: T) => State[FieldKey]) {
-		return (ev: T) => {
-			this.setState({ ...this.state, [fieldName]: valuePreparer(ev) });
-		};
-	}
+	const handleSearchTermChange = (event: ChangeEvent<HTMLInputElement>) => {
+		setSearchTerm(event.currentTarget.value);
+	};
 
-	render() {
-		const { contacts, serverError } = this.props;
-		const { searchTerm } = this.state;
-		return (
-			<PageContentBox hideTrailingMargin={true}>
-				{serverError && (serverError.length > 0)
-					? <div className="alert alert-danger" role="alert">{serverError}</div>
-					: undefined
-				}
-				<Row className={"searchControl"}>
-					<Col>
-						<Row className={"searchBar"}>
-							<Col className="col-xs-12">
-								<Form.Label htmlFor="searchTerm">What are you searching for?</Form.Label>
-								<Form.Control type="text" value={searchTerm} onChange={this._searchTermChange} onKeyDown={this._searchKeyDown} id="searchTerm"></Form.Control>
-							</Col>
-						</Row>
-						<Row>
-							<Col className="d-flex flex-row-reverse">
-								{contacts.isLoading
-									? <Button onClick={this._onSearch} disabled>
-										<span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;&nbsp;
-										<span>Searching...</span>
-									</Button>
-									: <Button onClick={this._onSearch}>Search</Button>
-								}
-							</Col>
-						</Row>
-					</Col>
-				</Row>
-				{contacts.isLoading
-					? null
-					:
-					<Table>
-						<thead>
-							<tr>
-								<th>Title</th>
-								<th>Forename</th>
-								<th>Surname</th>
-							</tr>
-						</thead>
-						{contacts.hasValue && (contacts.value.length == 0)
-							? <tbody>
-								<tr>
-									<td colSpan={3}>No results</td>
-								</tr>
-							</tbody>
-							: this.renderResults(contacts)
-						}
-					</Table>
-				}
-			</PageContentBox>
-		);
-	}
-
-	renderResults(results: LoadObject<ReadonlyArray<ContactRecord>>) {
+	const renderResults = (results: LoadObject<ReadonlyArray<ContactRecord>>) => {
 		if (!results.hasValue) {
 			return null;
 		}
@@ -145,24 +67,66 @@ class ContactsContainer extends React.Component<Props, State> {
 			</tbody>
 		);
 	}
+
+	const onSearch = () => {
+		fetchForCurrentCriteria();
+	};
+
+	return (
+		<PageContentBox hideTrailingMargin={true}>
+			{state.serverError && (state.serverError.length > 0)
+				? <div className="alert alert-danger" role="alert">{state.serverError}</div>
+				: undefined
+			}
+			<Row className={"searchControl"}>
+				<Col>
+					<Row className={"searchBar"}>
+						<Col className="col-xs-12">
+							<Form.Label htmlFor="searchTerm">What are you searching for?</Form.Label>
+							<Form.Control
+								type="text"
+								value={searchTerm}
+								onChange={handleSearchTermChange}
+								onKeyDown={(ev) => handleKeyDown(ev.key)}
+								id="searchTerm"></Form.Control>
+						</Col>
+					</Row>
+					<Row>
+						<Col className="d-flex flex-row-reverse">
+							{state.contacts.isLoading
+								? <Button onClick={onSearch} disabled>
+									<span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;&nbsp;
+									<span>Searching...</span>
+								</Button>
+								: <Button onClick={onSearch}>Search</Button>
+							}
+						</Col>
+					</Row>
+				</Col>
+			</Row>
+			{state.contacts.isLoading
+				? null
+				:
+				<Table>
+					<thead>
+						<tr>
+							<th>Title</th>
+							<th>Forename</th>
+							<th>Surname</th>
+						</tr>
+					</thead>
+					{state.contacts.hasValue && (state.contacts.value.length == 0)
+						? <tbody>
+							<tr>
+								<td colSpan={3}>No results</td>
+							</tr>
+						</tbody>
+						: renderResults(state.contacts)
+					}
+				</Table>
+			}
+		</PageContentBox>
+	);
 }
 
-const mapStateToProps = (state: AppState) => {
-	const { 
-		contacts, 
-		pageNumber, 
-		totalResultCount, 
-		resultsPerPage, 
-		serverError
-	} = state.contacts;
-
-	return {
-		contacts,
-		pageNumber,
-		totalResultCount,
-		resultsPerPage,
-		serverError
-	};
-};
-
-export default connect(mapStateToProps)(ContactsContainer);
+export default ContactsContainer;
