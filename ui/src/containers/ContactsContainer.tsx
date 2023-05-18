@@ -14,7 +14,7 @@ interface Props { }
 
 const ContactsContainer: React.FC<Props> = () => {
 	const dispatch: ThunkDispatch<AppState, undefined, ContactActions> = useDispatch();
-	const state = useSelector((state: AppState) => state.contacts);
+	const { contacts, serverError } = useSelector((state: AppState) => state.contacts);
 
 	const [searchTerm, setSearchTerm] = useState("");
 
@@ -74,8 +74,8 @@ const ContactsContainer: React.FC<Props> = () => {
 
 	return (
 		<PageContentBox hideTrailingMargin={true}>
-			{state.serverError && (state.serverError.length > 0)
-				? <div className="alert alert-danger" role="alert">{state.serverError}</div>
+			{serverError && (serverError.length > 0)
+				? <div className="alert alert-danger" role="alert">{serverError}</div>
 				: undefined
 			}
 			<Row className={"searchControl"}>
@@ -93,7 +93,7 @@ const ContactsContainer: React.FC<Props> = () => {
 					</Row>
 					<Row>
 						<Col className="d-flex flex-row-reverse">
-							{state.contacts.isLoading
+							{contacts.isLoading
 								? <Button onClick={onSearch} disabled>
 									<span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;&nbsp;
 									<span>Searching...</span>
@@ -104,7 +104,7 @@ const ContactsContainer: React.FC<Props> = () => {
 					</Row>
 				</Col>
 			</Row>
-			{state.contacts.isLoading
+			{contacts.isLoading
 				? null
 				:
 				<Table>
@@ -115,13 +115,13 @@ const ContactsContainer: React.FC<Props> = () => {
 							<th>Surname</th>
 						</tr>
 					</thead>
-					{state.contacts.hasValue && (state.contacts.value.length == 0)
+					{contacts.hasValue && (contacts.value.length == 0)
 						? <tbody>
 							<tr>
 								<td colSpan={3}>No results</td>
 							</tr>
 						</tbody>
-						: renderResults(state.contacts)
+						: renderResults(contacts)
 					}
 				</Table>
 			}
