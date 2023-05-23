@@ -1,4 +1,4 @@
-FROM node:18.14.0
+FROM node:18.14.0-alpine
 
 # install desired version of yarn
 RUN corepack enable && yarn set version 3.2.1
