@@ -1,13 +1,12 @@
-﻿import React, { useCallback, useEffect, useState, ChangeEvent } from "react";
+﻿import React, { useCallback, useEffect, useState, ChangeEvent, useMemo } from "react";
 import { Button, Col, Form, Row, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "redux-thunk";
 import * as API from "../api/contacts";
 import { ContactSearch } from "@wellers/graphql-client";
 import PageContentBox from "../components/PageContentBox";
-import LoadObject from "../loadObject";
 import { AppState } from "../stores";
-import { ContactActions, ContactRecord } from "../types/contacts";
+import { ContactActions } from "../types/contacts";
 import "./ContactsContainer.less";
 
 interface Props { }
@@ -43,13 +42,13 @@ const ContactsContainer: React.FC<Props> = () => {
 		setSearchTerm(event.currentTarget.value);
 	};
 
-	const renderResults = (results: LoadObject<ReadonlyArray<ContactRecord>>) => {
-		if (!results.hasValue) {
+	const renderResults = useMemo(() => {
+		if (!contacts.hasValue) {
 			return null;
 		}
 		return (
 			<tbody>
-				{results.value.map(i => {
+				{contacts.value.map(i => {
 					return (
 						<tr>
 							<td>
@@ -66,7 +65,7 @@ const ContactsContainer: React.FC<Props> = () => {
 				})}
 			</tbody>
 		);
-	}
+	}, [contacts]);
 
 	const onSearch = () => {
 		fetchForCurrentCriteria();
@@ -121,7 +120,7 @@ const ContactsContainer: React.FC<Props> = () => {
 								<td colSpan={3}>No results</td>
 							</tr>
 						</tbody>
-						: renderResults(contacts)
+						: renderResults
 					}
 				</Table>
 			}
