@@ -1,7 +1,5 @@
-name: mern
 services:
   mongo:
-    container_name: mongo
     build: ./mongo/
     ports:
       - 27017:27017
@@ -9,7 +7,6 @@ services:
     volumes:
       - ~/temp:/data/db  
   graphql:
-    container_name: graphql
     build: ./graphql/
     ports:
       - 4000:80
@@ -26,8 +23,7 @@ services:
     restart: on-failure
     depends_on:
       - graphql
-  ui:
-    container_name: ui     
+  ui:  
     build:
       context: ./ui/
       args:
