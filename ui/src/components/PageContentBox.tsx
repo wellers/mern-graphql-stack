@@ -9,10 +9,10 @@ interface Props {
 	hideTrailingMargin?: boolean;
 }
 
-const PageContentBox: React.FC<Props> = ({
+function PageContentBox({
 	children,
 	hideTrailingMargin = false,
-}) => {
+}: Props) {
 	const className = `page-content-box ${hideTrailingMargin ? 'hide-trailing-margin' : ''}`;
 
 	return (

@@ -7,7 +7,7 @@ COPY .yarn /app/.yarn
 RUN corepack enable && yarn set version 3.1.1
 
 COPY package.json /app/package.json
-COPY --from=mern-graphql-client:latest /app/ /app/client
+COPY --from=mern-graphql-stack-graphql-client:latest /app/ /app/client
 RUN cd /app/client && npm link
 
 COPY yarn.lock /app/yarn.lock

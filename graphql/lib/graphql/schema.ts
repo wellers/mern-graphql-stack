@@ -4,12 +4,18 @@ import { scalarObjectId } from "./scalarObjectId";
 
 export const typeDefs = gql`
 	type Query	
+	type Mutation
 
 	extend type Query {
 		contacts: contacts_query
-	}	
+	}
+
+	extend type Mutation {
+		contacts: contacts_mutation
+	}
 
 	type contacts_query
+	type contacts_mutation
 
 	scalar contact_id
 	
@@ -36,11 +42,29 @@ export const typeDefs = gql`
 
 	extend type contacts_query {
 		contacts_find(filter: contacts_find_filter): contacts_find_result
-	}	
+	}
+
+	input contact_insert_input {
+		title: String!,
+		forename: String!,
+		surname: String!
+	}
+
+	type contact_insert_result {
+		success: Boolean!,
+		message: String!
+	}
+
+	extend type contacts_mutation {
+		contact_insert(input: contact_insert_input): contact_insert_result
+	}
 `;
 
 export const resolvers = {
 	Query: {
+		contacts: () => { return {}; }
+	},
+	Mutation: {
 		contacts: () => { return {}; }
 	},
 	contacts_query: {
@@ -64,6 +88,13 @@ export const resolvers = {
 				total_results_count,
 				results_per_page
 			};
+		}
+	},
+	contacts_mutation: {
+		async contact_insert(parent, { input }, { db }, info) {
+			const { insertedId } = await db.contacts.insertOne(input);
+
+			return { success: true, message: `Contact (contact_id: ${insertedId}) added.` };
 		}
 	},
 	contact: {

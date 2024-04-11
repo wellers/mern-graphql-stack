@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"build": "webpack --progress",
-		"start": "ts-node ./server/index.js"
+		"start": "tsx ./server/index.js"
 	},
 	"browserslist": [
 		">0.2%",
@@ -31,7 +31,7 @@
 		"react-router-dom": "5.0.1",
 		"redux-logger": "3.0.6",
 		"redux-thunk": "2.4.2",
-		"ts-node": "10.9.1",
+		"tsx": "4.7.2",
 		"ts-polyfill": "3.3.3"		
 	},
 	"devDependencies": {		

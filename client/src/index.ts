@@ -5,7 +5,7 @@ export class GraphQLClient {
 		readonly graphUrl: string
 	) {}
 
-	async contacts_find(filter: ContactSearch) {
+	async findContacts(filter: ContactSearch) {
 		const payload = {
 			query: `
 			query($filter: contacts_find_filter) {
@@ -28,6 +28,25 @@ export class GraphQLClient {
 			}
 		};
 		
+		return await postRequest(this.graphUrl, payload);
+	}
+
+	async insertContact(input: Contact) {
+		const payload = {
+			query: `
+			mutation($input: contact_insert_input) {
+				contacts {
+					contact_insert(input: $input) {
+						success,
+						message
+					}
+				}
+			}`,
+			variables: {
+				input
+			}
+		};
+
 		return await postRequest(this.graphUrl, payload);
 	}
 }

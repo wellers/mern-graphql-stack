@@ -2,9 +2,7 @@
 import { connect } from "react-redux";
 import PageContentBox from "../components/PageContentBox";
 
-interface Props {}
-
-const HomeContainer: React.FC<Props> = () => {
+function HomeContainer() {
   return (
     <PageContentBox hideTrailingMargin={true}>
       This is a Web application.
