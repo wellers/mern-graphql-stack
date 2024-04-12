@@ -10,7 +10,12 @@ import { ContactActions } from "../types/contacts";
 import "./ContactsContainer.less";
 import * as Actions from "../actions/contacts";
 
-type ContactState = {
+interface ContactsState {
+	searchTerm: string,
+	contact: ContactState
+}
+
+interface ContactState {
 	title: string,
 	forename: string,
 	surname: string
@@ -20,15 +25,21 @@ export default function ContactsContainer() {
 	const dispatch: ThunkDispatch<AppState, undefined, ContactActions> = useDispatch();
 	const { contacts, showAddContact, serverError } = useSelector((state: AppState) => state.contacts);
 
-	const [state, setState] = useState({
-		searchTerm: ""
+	const [state, setState] = useState<ContactsState>({
+		searchTerm: "",
+		contact: {
+			title: "",
+			forename: "",
+			surname: ""
+		}
 	});
 
-	const [contact, setContactState] = useState<ContactState>({
-		title: "",
-		forename: "",
-		surname: ""
-	});
+	const updateState = (field, value) => {
+		setState(previousState => ({
+			...previousState,
+			[field]: value
+		}));
+	}
 
 	useEffect(() => {
 		fetchForCurrentCriteria();
@@ -42,7 +53,7 @@ export default function ContactsContainer() {
 		};
 		dispatch(API.fetchContacts(search));
 	},
-		[state.searchTerm, showAddContact, dispatch]
+		[state.searchTerm, dispatch]
 	);
 
 	function handleKeyDown(key: string) {
@@ -52,9 +63,8 @@ export default function ContactsContainer() {
 	}
 
 	function handleSearchTermChange(event: ChangeEvent<HTMLInputElement>) {
-		setState(previousState => {
-			return { ...previousState, searchTerm: event.currentTarget.value };
-		});
+		const { value } = event.target;
+		updateState("searchTerm", value);
 	}
 
 	const renderResults = useMemo(() => {
@@ -88,7 +98,7 @@ export default function ContactsContainer() {
 	}
 
 	function handleSubmitContact() {
-		dispatch(API.addContact(contact));
+		dispatch(API.addContact(state.contact));
 		fetchForCurrentCriteria();
 	}
 
@@ -97,20 +107,19 @@ export default function ContactsContainer() {
 	}
 
 	const handleChange = (field: keyof ContactState) => (event: ChangeEvent<HTMLInputElement>) => {
-		setContactState(previousState => ({
-			...previousState,
-			[field]: event.target.value
-		}));
+		const { value } = event.target;
+		updateState("contact", {
+			...state.contact,
+			[field]: value
+		});
 	}
-
-	const handleTitleOnChange = (event: ChangeEvent<HTMLInputElement>) => handleChange("title")(event);
-	const handleForenameOnChange = (event: ChangeEvent<HTMLInputElement>) => handleChange("forename")(event);
-	const handleSurnameOnChange = (event: ChangeEvent<HTMLInputElement>) => handleChange("surname")(event);
 
 	function renderAddContactModal() {
 		if (!showAddContact) {
 			return;
 		}
+
+		const { title, forename, surname } = state.contact;
 
 		return (
 			<div className="modal show" style={{ display: 'block', position: 'initial' }}>
@@ -122,15 +131,15 @@ export default function ContactsContainer() {
 						<Form>
 							<Form.Group>
 								<Form.Label>Title</Form.Label>
-								<Form.Control type="text" value={contact.title} onChange={handleTitleOnChange}></Form.Control>
+								<Form.Control type="text" value={title} onChange={handleChange("title")}></Form.Control>
 							</Form.Group>
 							<Form.Group>
 								<Form.Label>First name</Form.Label>
-								<Form.Control type="text" value={contact.forename} onChange={handleForenameOnChange}></Form.Control>
+								<Form.Control type="text" value={forename} onChange={handleChange("forename")}></Form.Control>
 							</Form.Group>
 							<Form.Group>
 								<Form.Label>Last name</Form.Label>
-								<Form.Control type="text" value={contact.surname} onChange={handleSurnameOnChange}></Form.Control>
+								<Form.Control type="text" value={surname} onChange={handleChange("surname")}></Form.Control>
 							</Form.Group>
 						</Form>
 					</Modal.Body>
@@ -172,7 +181,7 @@ export default function ContactsContainer() {
 						<Row>
 							<Col className="d-flex flex-row-reverse">
 								{contacts.isLoading
-									? 
+									?
 									<Button onClick={onSearch} disabled>
 										<span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;&nbsp;
 										<span>Searching...</span>
@@ -195,7 +204,7 @@ export default function ContactsContainer() {
 							</tr>
 						</thead>
 						{contacts.hasValue && (contacts.value.length == 0)
-							? 
+							?
 							<tbody>
 								<tr>
 									<td colSpan={3}>No results</td>
