@@ -1,13 +1,13 @@
-FROM node:18.14.0-alpine
+FROM node:20.12.2-alpine
 
-COPY .yarn /app/.yarn
-COPY yarn.lock /app/yarn.lock
+COPY .eslintrc.json .eslintrc.json
 
-# install desired version of yarn
-RUN corepack enable && yarn set version 3.1.1
+RUN corepack enable pnpm
 
+# pnpm install in a way that allows caching
 COPY package.json /app/package.json
-RUN cd /app && yarn install
+COPY pnpm-lock.yaml /app/pnpm-lock.yaml
+RUN cd /app && pnpm i
 
 COPY dist /app/dist
 

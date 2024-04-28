@@ -9,170 +9,129 @@
  *
  * @flow
  */
-exports.__esModule = true;
-var LoadObject = /** @class */ (function () {
-    function LoadObject(operation, hasValue, value, error) {
+Object.defineProperty(exports, "__esModule", { value: true });
+class LoadObject {
+    _operation;
+    _hasValue;
+    _value;
+    _error;
+    constructor(operation, hasValue, value, error) {
         this._operation = operation;
         this._hasValue = hasValue;
         this._value = value;
         this._error = error;
     }
-    Object.defineProperty(LoadObject.prototype, "operation", {
-        get: function () {
-            return this._operation;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LoadObject.prototype, "value", {
-        get: function () {
-            if (!this.hasValue) {
-                throw new Error('Expected load object to have a value set');
-            }
-            return this._value; // Inferred as defined from "hasValue"
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LoadObject.prototype, "error", {
-        get: function () {
-            if (!this.hasError) {
-                throw new Error('Expected load object to have an error set');
-            }
-            return this._error; // Inferred as defined from "hasError"
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LoadObject.prototype, "hasOperation", {
-        get: function () {
-            return (this._operation != 0 /* None */);
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LoadObject.prototype, "hasValue", {
-        get: function () {
-            return this._hasValue;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LoadObject.prototype, "hasError", {
-        get: function () {
-            return !!this._error;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LoadObject.prototype, "isEmpty", {
-        get: function () {
-            return !this.hasValue && !this.hasOperation && !this.hasError;
-        },
-        enumerable: false,
-        configurable: true
-    });
-    LoadObject.prototype.withOperation = function (operation) {
+    get operation() {
+        return this._operation;
+    }
+    get value() {
+        if (!this.hasValue) {
+            throw new Error('Expected load object to have a value set');
+        }
+        return this._value; // Inferred as defined from "hasValue"
+    }
+    get error() {
+        if (!this.hasError) {
+            throw new Error('Expected load object to have an error set');
+        }
+        return this._error; // Inferred as defined from "hasError"
+    }
+    get hasOperation() {
+        return (this._operation != 0 /* LoadObjectOperation.None */);
+    }
+    get hasValue() {
+        return this._hasValue;
+    }
+    get hasError() {
+        return !!this._error;
+    }
+    get isEmpty() {
+        return !this.hasValue && !this.hasOperation && !this.hasError;
+    }
+    withOperation(operation) {
         return new LoadObject(operation, this.hasValue, this._value, this._error);
-    };
-    LoadObject.prototype.withValue = function (value) {
+    }
+    withValue(value) {
         return new LoadObject(this.operation, true, value, this._error);
-    };
-    LoadObject.prototype.withError = function (error) {
+    }
+    withError(error) {
         return new LoadObject(this.operation, this.hasValue, this._value, error);
-    };
-    LoadObject.prototype.removeOperation = function () {
-        if (this.operation == 0 /* None */) {
+    }
+    removeOperation() {
+        if (this.operation == 0 /* LoadObjectOperation.None */) {
             return this;
         }
-        return new LoadObject(0 /* None */, this.hasValue, this._value, this._error);
-    };
-    LoadObject.prototype.removeValue = function () {
+        return new LoadObject(0 /* LoadObjectOperation.None */, this.hasValue, this._value, this._error);
+    }
+    removeValue() {
         if (!this._value || !this.hasValue) {
             return this;
         }
         return new LoadObject(this.operation, false, undefined, this._error);
-    };
-    LoadObject.prototype.removeError = function () {
+    }
+    removeError() {
         if (!this.hasError) {
             return this;
         }
         return new LoadObject(this.operation, this.hasValue, this._value, undefined);
-    };
-    LoadObject.prototype.map = function (fn) {
+    }
+    map(fn) {
         if (!this.hasValue) {
             return this;
         }
         return this.withValue(fn(this.value));
-    };
-    Object.defineProperty(LoadObject.prototype, "isCreating", {
-        get: function () {
-            return (this.operation == 1 /* Creating */);
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LoadObject.prototype, "isLoading", {
-        get: function () {
-            return (this.operation == 2 /* Loading */);
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LoadObject.prototype, "isUpdating", {
-        get: function () {
-            return (this.operation == 3 /* Updating */);
-        },
-        enumerable: false,
-        configurable: true
-    });
-    Object.defineProperty(LoadObject.prototype, "isDeleting", {
-        get: function () {
-            return (this.operation == 4 /* Deleting */);
-        },
-        enumerable: false,
-        configurable: true
-    });
-    LoadObject.prototype.done = function () {
-        return this.withOperation(0 /* None */);
-    };
-    LoadObject.prototype.creating = function () {
-        return this.withOperation(1 /* Creating */);
-    };
-    LoadObject.prototype.loading = function () {
-        return this.withOperation(2 /* Loading */);
-    };
-    LoadObject.prototype.updating = function () {
-        return this.withOperation(3 /* Updating */);
-    };
-    LoadObject.prototype.deleting = function () {
-        return this.withOperation(4 /* Deleting */);
-    };
-    LoadObject.empty = function () {
-        return this.createFromOperation(0 /* None */);
-    };
-    LoadObject.creating = function () {
-        return this.createFromOperation(1 /* Creating */);
-    };
-    LoadObject.loading = function () {
-        return this.createFromOperation(2 /* Loading */);
-    };
-    LoadObject.updating = function () {
-        return this.createFromOperation(3 /* Updating */);
-    };
-    LoadObject.deleting = function () {
-        return this.createFromOperation(4 /* Deleting */);
-    };
-    LoadObject.fromValue = function (value) {
-        return new LoadObject(0 /* None */, true, value, undefined);
-    };
-    LoadObject.fromError = function (error) {
-        return new LoadObject(0 /* None */, false, undefined, error);
-    };
-    LoadObject.createFromOperation = function (operation) {
+    }
+    get isCreating() {
+        return (this.operation == 1 /* LoadObjectOperation.Creating */);
+    }
+    get isLoading() {
+        return (this.operation == 2 /* LoadObjectOperation.Loading */);
+    }
+    get isUpdating() {
+        return (this.operation == 3 /* LoadObjectOperation.Updating */);
+    }
+    get isDeleting() {
+        return (this.operation == 4 /* LoadObjectOperation.Deleting */);
+    }
+    done() {
+        return this.withOperation(0 /* LoadObjectOperation.None */);
+    }
+    creating() {
+        return this.withOperation(1 /* LoadObjectOperation.Creating */);
+    }
+    loading() {
+        return this.withOperation(2 /* LoadObjectOperation.Loading */);
+    }
+    updating() {
+        return this.withOperation(3 /* LoadObjectOperation.Updating */);
+    }
+    deleting() {
+        return this.withOperation(4 /* LoadObjectOperation.Deleting */);
+    }
+    static empty() {
+        return this.createFromOperation(0 /* LoadObjectOperation.None */);
+    }
+    static creating() {
+        return this.createFromOperation(1 /* LoadObjectOperation.Creating */);
+    }
+    static loading() {
+        return this.createFromOperation(2 /* LoadObjectOperation.Loading */);
+    }
+    static updating() {
+        return this.createFromOperation(3 /* LoadObjectOperation.Updating */);
+    }
+    static deleting() {
+        return this.createFromOperation(4 /* LoadObjectOperation.Deleting */);
+    }
+    static fromValue(value) {
+        return new LoadObject(0 /* LoadObjectOperation.None */, true, value, undefined);
+    }
+    static fromError(error) {
+        return new LoadObject(0 /* LoadObjectOperation.None */, false, undefined, error);
+    }
+    static createFromOperation(operation) {
         return new LoadObject(operation, false, undefined, undefined);
-    };
-    return LoadObject;
-}());
-exports["default"] = LoadObject;
+    }
+}
+exports.default = LoadObject;
 //# sourceMappingURL=loadObject.js.map

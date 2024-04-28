@@ -1,21 +1,17 @@
-FROM node:18.14.0-alpine
+FROM node:20.12.2-alpine
 WORKDIR /app
 EXPOSE 80
 
 COPY .eslintrc.json .eslintrc.json
 
-COPY .yarn /app/.yarn
+RUN corepack enable pnpm
 
-RUN corepack enable && yarn set version 3.1.1
-
-# yarn install in a way that allows caching
+# pnpm install in a way that allows caching
 COPY package.json /app/package.json
-
-COPY yarn.lock /app/yarn.lock
-COPY .yarnrc.yml /app/.yarnrc.yml
-RUN yarn install
+COPY pnpm-lock.yaml /app/pnpm-lock.yaml
+RUN pnpm i
 
 COPY lib /app/lib
 COPY tsconfig.json tsconfig.json
 
-CMD ["yarn", "start"]
+CMD ["pnpm", "start"]

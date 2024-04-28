@@ -2,6 +2,7 @@
 	"name": "graphql",
 	"version": "1.0.0",
 	"scripts": {
+		"preinstall": "npx only-allow pnpm",
 		"start": "tsx lib/server.ts",
 		"start:dev": "tsx --inspect=0.0.0.0:9229 lib/server.ts",
 		"style": "eslint /app/lib/**/*.ts"
@@ -16,6 +17,5 @@
 		"mongodb": "4.10.0",
 		"tsx": "4.7.2",
 		"typescript": "4.8.3"
-	},
-	"packageManager": "yarn@3.3.1"
+	}
 }
